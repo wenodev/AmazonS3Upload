@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>S3 파일 업로드 테스트</title>
+
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/styles.css}" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css"/>
+</head>
+
+</head>
+<body>
+<h1>파일 업로드</h1> <hr>
+
+<form th:action="@{/gallery}" method="post" enctype="multipart/form-data">
+<!--    파일 : <input type="file" name="file"> <br>-->
+    <div>
+        <label for="fileselect">Files to upload:</label>
+        <input type="file" id="fileselect" name="files" multiple="multiple" />
+        <div id="filedrag">or drop files here</div>
+    </div>
+
+    <button>등록하기</button>
+</form>
+
+<div id="messages">
+    <p>Status Messages</p>
+</div>
+
+<div id="app"></div>
+
+
+<div>
+    <section>
+        <div id="data-container"></div>
+        <div id="pagination"></div>
+    </section>
+</div>
+
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.724.0.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<script>
+    function getHtml(template) {
+        return template.join('\n');
+    }
+    // viewAlbum();
+</script>
+
+<script th:src="@{/js/filedrag.js}"></script>
+
+<script>
+    $(function () {
+        viewAlbum("test", (result)=>{
+            let container = $('#pagination');
+            container.pagination({
+                dataSource: [
+                    {name: result},
+                    {name: result[0]},
+                    {name: result[1]},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                    {name: result},
+                ],
+
+                callback: function (data, pagination) {
+                    var dataHtml = '<ul>';
+
+                    $.each(data, function (index, item) {
+                        dataHtml += '<li>' + item.name + '</li>';
+                    });
+
+                    dataHtml += '</ul>';
+
+                    $("#data-container").html(dataHtml);
+                }
+            })
+        })
+
+    })
+</script>
+
+</body>
+</html>

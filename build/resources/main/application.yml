@@ -1,0 +1,17 @@
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIAZHXJLLIUX3IUDJBZ
+      secretKey: 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
+    s3:
+      bucket: sazaxa-img-hosting
+    region:
+      static: us-east-2
+    stack:
+      auto: false
+
+
+spring:
+  h2:
+    console:
+      enabled: true
