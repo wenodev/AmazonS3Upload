@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @NoArgsConstructor
@@ -54,6 +55,15 @@ public class S3Service {
         }
         return s3Client.getUrl(bucket, files.toString()).toString();
     }
+
+
+//    public String makeRandomNumber(){
+//        Random random = new Random();
+//        String intTime = new java.text.SimpleDateFormat("mmss").format(new java.util.Date());
+//        String randomNumber = String.valueOf(random.nextInt(99)+10);
+//        String lastNumber = "-".concat(intTime) +  + randomNumber;
+//        return lastNumber;
+//    }
 
 
 

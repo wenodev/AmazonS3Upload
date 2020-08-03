@@ -5,8 +5,7 @@ import com.sazaxa.imgUpload.service.GalleryService;
 import com.sazaxa.imgUpload.service.S3Service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -27,6 +26,8 @@ public class GalleryController {
     @PostMapping("/gallery")
     public String execWrite(GalleryDto galleryDto, List<MultipartFile> files) throws IOException {
 
+        System.out.println("파일 갯수 : " + files.size());
+
         String imgPath = s3Service.upload(files);
 
         galleryDto.setFilePath(imgPath);
@@ -35,6 +36,8 @@ public class GalleryController {
 
         return "redirect:/gallery";
     }
+
+
 
 
 

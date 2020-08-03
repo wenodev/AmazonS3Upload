@@ -3,35 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>S3 파일 업로드 테스트</title>
-
-    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/styles.css}" />
-
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css"/>
 </head>
 
-</head>
 <body>
-<h1>파일 업로드</h1> <hr>
+<h1>파일 업로드</h1>
+<hr>
 
 <form th:action="@{/gallery}" method="post" enctype="multipart/form-data">
-<!--    파일 : <input type="file" name="file"> <br>-->
     <div>
         <label for="fileselect">Files to upload:</label>
-        <input type="file" id="fileselect" name="files" multiple="multiple" />
+        <input type="file" id="fileselect" name="files" multiple="multiple"/>
         <div id="filedrag">or drop files here</div>
     </div>
-
-    <button>등록하기</button>
+    <button type="submit">등록하기</button>
 </form>
 
 <div id="messages">
-    <p>Status Messages</p>
 </div>
 
 <div id="app"></div>
-
 
 <div>
     <section>
@@ -46,6 +40,7 @@
     function getHtml(template) {
         return template.join('\n');
     }
+
     // viewAlbum();
 </script>
 
@@ -53,51 +48,32 @@
 
 <script>
     $(function () {
-        viewAlbum("test", (result)=>{
+        viewAlbum("test", (result) => {
+
+            data = new Array();
+            for (var i = 0; i < result.length; i++) {
+                data.push({name: result[i]});
+            }
+
             let container = $('#pagination');
             container.pagination({
-                dataSource: [
-                    {name: result},
-                    {name: result[0]},
-                    {name: result[1]},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
-                    {name: result},
 
-
-                ],
+                dataSource: data,
 
                 callback: function (data, pagination) {
                     var dataHtml = '<ul>';
-
                     $.each(data, function (index, item) {
-                        dataHtml += '<li>' + item.name + '</li>';
+                        dataHtml += '<li>';
+                        dataHtml += '<img width="100px" height="200px;" src = "' + item.name + '">';
+                        dataHtml += item.name;
+                        dataHtml += '</li>';
                     });
-
                     dataHtml += '</ul>';
-
                     $("#data-container").html(dataHtml);
                 }
             })
+
         })
-
-
 
     })
 </script>
