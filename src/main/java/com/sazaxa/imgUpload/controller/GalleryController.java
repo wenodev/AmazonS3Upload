@@ -24,15 +24,17 @@ public class GalleryController {
     }
 
     @PostMapping("/gallery")
-    public String execWrite(GalleryDto galleryDto, List<MultipartFile> files) throws IOException {
+    public String execWrite(@RequestParam("upload-file") List<MultipartFile> files) throws IOException {
 
         System.out.println("파일 갯수 : " + files.size());
 
-        String imgPath = s3Service.upload(files);
+        s3Service.upload(files);
 
-        galleryDto.setFilePath(imgPath);
+//        String imgPath = s3Service.upload(files);
 
-        galleryService.savePost(galleryDto);
+//        galleryDto.setFilePath(imgPath);
+//
+//        galleryService.savePost(galleryDto);
 
         return "redirect:/gallery";
     }

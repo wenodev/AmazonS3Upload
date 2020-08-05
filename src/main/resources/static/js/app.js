@@ -126,19 +126,14 @@ function viewAlbum(albumName, callback) {
             return photoUrl;
         });
         photos.reverse()
-        console.log("photos :" + photos);
-        console.log("typeof photos :" + typeof photos);
-        console.log("photos[0] :" + photos[0]);
-        console.log("photos[1] :" + photos[1]);
-        console.log("photos 길이 :" + photos.length);
 
         var message = photos.length ?
             '<p>Click on the X to delete the photo</p>' :
             '<p>You do not have any photos in this album. Please add photos.</p>';
 
-        var htmlTemplate = [
-            getHtml(photos.reverse()),
-        ]
+        // var htmlTemplate = [
+        //     getHtml(photos.reverse()),
+        // ]
         return callback(photos);
         // document.getElementById('app').innerHTML = getHtml(htmlTemplate);
     });

@@ -7,35 +7,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.min.js"></script>
-
-    <style>
-        .drag-img {
-
-        }
-
-    </style>
-
 </head>
 
 <body>
 <h1>파일 업로드</h1>
 <hr>
 
-<form th:action="@{/gallery}" method="post" enctype="multipart/form-data">
+<form>
     <div class="drag-img">
         <label for="fileselect">Files to upload:</label>
-        <div style="">
-            <input type="file" id="fileselect" name="files" multiple="multiple"/>
+        <input type="file" id="fileselect" name="files" multiple="multiple" />
+        <div id="filedrag" class="drop">
+            <div>or drop files here</div>
+            <img id="container" />
+            <div id="thumbnails"></div>
         </div>
-        <div id="filedrag">or drop files here</div>
     </div>
-    <button type="submit">등록하기</button>
+    <button id="btnSubmit" >등록하기</button>
 </form>
-
-<div id="messages">
-</div>
-
-<div id="app"></div>
 
 <div>
     <section>
@@ -44,16 +33,17 @@
     </section>
 </div>
 
+
+
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.724.0.min.js"></script>
 <script th:src="@{/js/app.js}"></script>
-<script>
-    function getHtml(template) {
-        return template.join('\n');
-    }
+<!--<script>-->
+<!--    function getHtml(template) {-->
+<!--        return template.join('\n');-->
+<!--    }-->
+<!--</script>-->
 
-    // viewAlbum();
-</script>
-
+<!-- AWS S3 이미지 불러오기 및 Paging-->
 <script th:src="@{/js/filedrag.js}"></script>
 <script>
     $(function () {
@@ -79,6 +69,99 @@
             })
         })
     })
+</script>
+
+<!-- copy & paste-->
+<script>
+    document.onpaste = function (pasteEvent) {
+        // consider the first item (can be easily extended for multiple items)
+        var item = pasteEvent.clipboardData.items[0];
+
+        if (item.type.indexOf("image") === 0) {
+            var blob = item.getAsFile();
+
+            var reader = new FileReader();
+            reader.onload = function (event, idx) {
+                var temp1 = document.createElement('div');
+                temp1.innerHTML = '<div class="thumb"> \
+<div class="close" >X</div> \
+<img src="' + event.target.result + '"> \
+</div>';
+
+                document.getElementById("thumbnails").append(temp1);
+            };
+
+            reader.readAsDataURL(blob);
+        }
+    }
+</script>
+<!-- drag & drop -->
+<script>
+    var uploadFiles = [];
+    var $drop = $(".drop");
+    $drop.on("dragenter", function (e) { //드래그 요소가 들어왔을떄
+        $(this).addClass('drag-over');
+    }).on("dragleave", function (e) { //드래그 요소가 나갔을때
+        $(this).removeClass('drag-over');
+    }).on("dragover", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }).on('drop', function (e) { //드래그한 항목을 떨어뜨렸을때
+        e.preventDefault();
+        $(this).removeClass('drag-over');
+        var files = e.originalEvent.dataTransfer.files; //드래그&드랍 항목
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var size = uploadFiles.push(file); //업로드 목록에 추가
+            preview(file, size - 1); //미리보기 만들기
+        }
+    });
+
+    function preview(file, idx) {
+        var reader = new FileReader();
+        reader.onload = (function (f, idx) {
+            return function (e) {
+                var temp2 = document.createElement('div');
+                temp2.innerHTML = '<div class="thumb"> \
+<div class="close" data-idx="' + idx + '">X</div> \
+<img src="' + e.target.result + '" title="' + escape(f.name) + '"/> \
+</div>';
+                $("#thumbnails").append(temp2);
+            };
+        })(file, idx);
+        reader.readAsDataURL(file);
+    }
+
+    $("#btnSubmit").on("click", function () {
+        var formData = new FormData();
+        $.each(uploadFiles, function (i, file) {
+            //if (file.upload != 'disable')
+                //삭제하지 않은 이미지만 업로드 항목으로 추가
+                formData.append('upload-file', file, file.name);
+        });
+
+        alert(formData.has('upload-file'));
+
+        $.ajax({
+            url: '/gallery',
+            data: formData,
+            type: 'post',
+            contentType: false,
+            processData: false,
+            success: function (ret) {
+                alert("완료");
+            }
+        });
+    });
+
+    $("#thumbnails").on("click", ".close", function (e) {
+
+        var $target = $(e.target);
+
+        var idx = $target.attr('data-idx');
+        uploadFiles[idx].upload = 'disable'; //삭제된 항목은 업로드하지 않기 위해 플래그 생성
+        $target.parent().remove(); //프리뷰 삭제
+    });
 </script>
 
 </body>
