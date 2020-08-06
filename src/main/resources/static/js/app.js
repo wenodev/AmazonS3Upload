@@ -89,40 +89,21 @@ function createAlbum(albumName) {
 }
 
 function viewAlbum(albumName, callback) {
-    albumName = "test";
-    var albumPhotosKey = encodeURIComponent(albumName) + '/';
+    albumName = "";
+    // var albumPhotosKey = encodeURIComponent(albumName) + '/';
+    var albumPhotosKey = encodeURIComponent(albumName);
     s3.listObjects({
         Prefix: albumPhotosKey
     }, function (err, data) {
         if (err) {
             return alert('There was an error viewing your album: ' + err.message);
         }
-        // 'this' references the AWS.Response instance that represents the response
         var href = this.request.httpRequest.endpoint.href;
         var bucketUrl = href + albumBucketName + '/';
 
         photos = data.Contents.map(function (photo) {
-
             var photoKey = photo.Key;
             var photoUrl = bucketUrl + encodeURIComponent(photoKey);
-            // return getHtml([
-            //     '<span>',
-            //     '<div>',
-            //     '<img style="width:128px;height:128px;" src="' + photoUrl + '"/>',
-            //     '</div>',
-            //     '<div>',
-            //     '<span onclick="deletePhoto(\'' + albumName + "','" + photoKey + '\')">',
-            //     'X',
-            //     '</span>',
-            //     // '<span>',
-            //     // photoKey.replace(albumPhotosKey, ''),
-            //     // '</span>',
-            //     '<span>',
-            //     photoUrl,
-            //     '</span>',
-            //     '</div>',
-            //     '</span>',
-            // ]);
             return photoUrl;
         });
         photos.reverse()
@@ -130,12 +111,7 @@ function viewAlbum(albumName, callback) {
         var message = photos.length ?
             '<p>Click on the X to delete the photo</p>' :
             '<p>You do not have any photos in this album. Please add photos.</p>';
-
-        // var htmlTemplate = [
-        //     getHtml(photos.reverse()),
-        // ]
         return callback(photos);
-        // document.getElementById('app').innerHTML = getHtml(htmlTemplate);
     });
 
 }
@@ -163,7 +139,6 @@ function addPhoto(albumName) {
         viewAlbum(albumName);
     });
 }
-
 
 function deletePhoto(albumName, photoKey) {
     s3.deleteObject({
@@ -204,28 +179,3 @@ function deleteAlbum(albumName) {
         });
     });
 }
-
-
-
-
-// function viewAlbum(albumName, callback) {
-//     albumName = "test";
-//     var albumPhotosKey = encodeURIComponent(albumName) + '/';
-//
-//     s3.listObjects({
-//         Prefix: albumPhotosKey
-//     }, function (err, data) {
-//         if (err) {
-//             return alert('There was an error viewing your album: ' + err.message);
-//         }
-//         var href = this.request.httpRequest.endpoint.href;
-//         var bucketUrl = href + albumBucketName + '/';
-//
-//         var photos = data.Contents.map(function (photo) {
-//             var photoKey = photo.Key;
-//             var photoUrl = bucketUrl + encodeURIComponent(photoKey);
-//             return photoUrl;
-//         });
-//         return callback(photos);
-//     });
-// }

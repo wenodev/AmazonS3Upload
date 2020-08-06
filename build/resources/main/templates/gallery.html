@@ -15,15 +15,15 @@
 
 <form>
     <div class="drag-img">
-        <label for="fileselect">Files to upload:</label>
-        <input type="file" id="fileselect" name="files" multiple="multiple" />
+<!--        <label for="fileselect">Files to upload:</label>-->
+        <input type="file" id="fileselect" name="files" multiple="multiple" hidden/>
         <div id="filedrag" class="drop">
             <div>or drop files here</div>
-            <img id="container" />
+            <img id="container"/>
             <div id="thumbnails"></div>
         </div>
     </div>
-    <button id="btnSubmit" >등록하기</button>
+<!--    <button id="btnSubmit">등록하기</button>-->
 </form>
 
 <div>
@@ -32,8 +32,6 @@
         <div id="pagination"></div>
     </section>
 </div>
-
-
 
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.724.0.min.js"></script>
 <script th:src="@{/js/app.js}"></script>
@@ -47,7 +45,7 @@
 <script th:src="@{/js/filedrag.js}"></script>
 <script>
     $(function () {
-        viewAlbum("test", (result) => {
+        viewAlbum("", (result) => {
             data = new Array();
             for (var i = 0; i < result.length; i++) {
                 data.push({name: result[i]});
@@ -56,11 +54,11 @@
             container.pagination({
                 dataSource: data,
                 callback: function (data, pagination) {
-                    var dataHtml = '<ul>';
+                    var dataHtml = '<ul id="upload-img-ul">';
                     $.each(data, function (index, item) {
-                        dataHtml += '<li>';
-                        dataHtml += '<img width="100px" height="200px;" src = "' + item.name + '">';
-                        dataHtml += item.name;
+                        dataHtml += '<li id="upload-img-li">';
+                        dataHtml += '<img class="upload-img"  onclick="copyFunction(this)"  src = "' + item.name + '">';
+                        // dataHtml += '<button onclick="copyFunction(this)" >' + item.name + '</button>';
                         dataHtml += '</li>';
                     });
                     dataHtml += '</ul>';
@@ -71,30 +69,20 @@
     })
 </script>
 
-<!-- copy & paste-->
-<script>
-    document.onpaste = function (pasteEvent) {
-        // consider the first item (can be easily extended for multiple items)
-        var item = pasteEvent.clipboardData.items[0];
 
-        if (item.type.indexOf("image") === 0) {
-            var blob = item.getAsFile();
+<!-- 토스트 이미지 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+        integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+        crossorigin="anonymous"></script>
 
-            var reader = new FileReader();
-            reader.onload = function (event, idx) {
-                var temp1 = document.createElement('div');
-                temp1.innerHTML = '<div class="thumb"> \
-<div class="close" >X</div> \
-<img src="' + event.target.result + '"> \
-</div>';
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
+      integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
+      crossorigin="anonymous"/>
 
-                document.getElementById("thumbnails").append(temp1);
-            };
 
-            reader.readAsDataURL(blob);
-        }
-    }
-</script>
+
+
+
 <!-- drag & drop -->
 <script>
     var uploadFiles = [];
@@ -115,6 +103,24 @@
             var size = uploadFiles.push(file); //업로드 목록에 추가
             preview(file, size - 1); //미리보기 만들기
         }
+
+        var formData = new FormData();
+        $.each(uploadFiles, function (i, file) {
+            //if (file.upload != 'disable')
+            //삭제하지 않은 이미지만 업로드 항목으로 추가
+            formData.append('upload-file', file, file.name);
+        });
+
+        $.ajax({
+            url: '/gallery',
+            data: formData,
+            type: 'post',
+            contentType: false,
+            processData: false,
+            success: function (ret) {
+                location.href = "/gallery";
+            }
+        });
     });
 
     function preview(file, idx) {
@@ -132,22 +138,37 @@
         reader.readAsDataURL(file);
     }
 
-    $("#btnSubmit").on("click", function () {
+
+    <!-- copy & paste-->
+    document.onpaste = function (pasteEvent) {
+        // consider the first item (can be easily extended for multiple items)
+        var item = pasteEvent.clipboardData.items[0];
+
+        if (item.type.indexOf("image") === 0) {
+            var file = item.getAsFile();
+
+            uploadFiles.push(file);
+
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var temp1 = document.createElement('div');
+                temp1.innerHTML = '<div class="thumb"> \
+<div class="close" >X</div> \
+<img src="' + event.target.result + '"> \
+</div>';
+                $("#thumbnails").append(temp1);
+
+            };
+
+            reader.readAsDataURL(file);
+        }
+
         var formData = new FormData();
         $.each(uploadFiles, function (i, file) {
             //if (file.upload != 'disable')
-                //삭제하지 않은 이미지만 업로드 항목으로 추가
-                formData.append('upload-file', file, file.name);
-        });
-
-        $.each(uploadFiles, function (i, blob) {
-            //if (file.upload != 'disable')
             //삭제하지 않은 이미지만 업로드 항목으로 추가
-            formData.append('upload-file', blob, blob.name);
+            formData.append('upload-file', file, file.name);
         });
-
-
-        alert(formData.has('upload-file'));
 
         $.ajax({
             url: '/gallery',
@@ -156,20 +177,113 @@
             contentType: false,
             processData: false,
             success: function (ret) {
-                alert("완료");
+                location.href = "/gallery";
+                // alert("완료");
             }
         });
-    });
 
-    $("#thumbnails").on("click", ".close", function (e) {
+    }
 
-        var $target = $(e.target);
 
-        var idx = $target.attr('data-idx');
-        uploadFiles[idx].upload = 'disable'; //삭제된 항목은 업로드하지 않기 위해 플래그 생성
-        $target.parent().remove(); //프리뷰 삭제
-    });
+
+
+
+    function copyFunction(copyUrlTemp) {
+        var copyUrl = copyUrlTemp.getAttribute('src');
+        var tempElem = document.createElement('textarea');
+        tempElem.value = copyUrl;
+        document.body.appendChild(tempElem);
+
+        tempElem.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempElem);
+
+        toastr["success"](copyUrl, "복사완료");
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-full-width",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "500",
+            "hideDuration": "700",
+            "timeOut": "700",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // function copyFunction(copyUrl) {
+    //     var copyUrl = $(copyUrl).text();
+    //     var tempElem = document.createElement('textarea');
+    //     tempElem.value = copyUrl;
+    //     document.body.appendChild(tempElem);
+    //
+    //     tempElem.select();
+    //     document.execCommand("copy");
+    //     document.body.removeChild(tempElem);
+    //
+    //
+    //     toastr["success"]("복사완료")
+    //     toastr.options = {
+    //         "closeButton": false,
+    //         "debug": false,
+    //         "newestOnTop": false,
+    //         "progressBar": false,
+    //         "positionClass": "toast-top-center",
+    //         "preventDuplicates": false,
+    //         "onclick": null,
+    //         "showDuration": "500",
+    //         "hideDuration": "700",
+    //         "timeOut": "700",
+    //         "extendedTimeOut": "1000",
+    //         "showEasing": "swing",
+    //         "hideEasing": "linear",
+    //         "showMethod": "fadeIn",
+    //         "hideMethod": "fadeOut"
+    //     }
+    // }
+
+
+    // images upload
+    // $("#btnSubmit").on("click", function () {
+    //     var formData = new FormData();
+    //     $.each(uploadFiles, function (i, file) {
+    //         //if (file.upload != 'disable')
+    //             //삭제하지 않은 이미지만 업로드 항목으로 추가
+    //             formData.append('upload-file', file, file.name);
+    //     });
+    //
+    //     $.ajax({
+    //         url: '/gallery',
+    //         data: formData,
+    //         type: 'post',
+    //         contentType: false,
+    //         processData: false,
+    //         success: function (ret) {
+    //             alert("완료");
+    //         }
+    //     });
+    // });
+
 </script>
+
 
 </body>
 </html>

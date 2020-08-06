@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -48,7 +50,13 @@ public class S3Service {
     public String upload(List<MultipartFile> files) throws IOException {
 
         for(int i=0; i<files.size(); i++){
-            String fileName = "test/" + files.get(i).getOriginalFilename();
+//            String fileName = "sazaxa/" + files.get(i).getOriginalFilename();
+//            String fileName = "sazaxa/".concat(makeRandomNumber());
+            String fileName = makeRandomNumber();
+
+
+            System.out.println("fileName : " + fileName);
+
 
             s3Client.putObject(new PutObjectRequest(bucket, fileName, files.get(i).getInputStream(), null)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
@@ -57,13 +65,19 @@ public class S3Service {
     }
 
 
-//    public String makeRandomNumber(){
-//        Random random = new Random();
-//        String intTime = new java.text.SimpleDateFormat("mmss").format(new java.util.Date());
-//        String randomNumber = String.valueOf(random.nextInt(99)+10);
-//        String lastNumber = "-".concat(intTime) +  + randomNumber;
-//        return lastNumber;
-//    }
+    public String makeRandomNumber(){
+        Random random = new Random();
+
+//        String intTime = new java.text.SimpleDateFormat("ddmmss").format(new java.util.Date());
+        SimpleDateFormat format1 = new SimpleDateFormat( "yyyyMMddHHmmss");
+        Date time = new Date();
+        String time1 = format1.format(time);
+
+
+        String randomNumber = String.valueOf(random.nextInt(99)+10);
+        String lastNumber = time1.concat(randomNumber);
+        return lastNumber;
+    }
 
 
 
