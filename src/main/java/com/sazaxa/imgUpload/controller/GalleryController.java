@@ -18,6 +18,11 @@ public class GalleryController {
     private S3Service s3Service;
     private GalleryService galleryService;
 
+    @GetMapping("/")
+    public String hello(){
+        return "/hello";
+    }
+
     @GetMapping("/gallery")
     public String galleryPage(){
         return "/gallery";
