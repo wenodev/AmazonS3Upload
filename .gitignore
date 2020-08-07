@@ -1,7 +1,6 @@
 
 
 ### IntelliJ IDEA ###
-.yml
 .idea
 *.iws
 *.iml
@@ -12,3 +11,6 @@ out/
 
 ### VS Code ###
 .vscode/
+.gradle/5.6.4/vcsMetadata-1/
+build/generated/
+build/tmp/
