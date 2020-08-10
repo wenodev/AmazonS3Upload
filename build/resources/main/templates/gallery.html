@@ -3,43 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <title>S3 파일 업로드 테스트</title>
-    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/weno.css}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css"/>
+
+
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/fancybox.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.min.js"></script>
 </head>
 
 <body>
-<h1>파일 업로드</h1>
-<hr>
 
-<form>
-    <div class="drag-img">
-<!--        <label for="fileselect">Files to upload:</label>-->
-        <input type="file" id="fileselect" name="files" multiple="multiple" hidden/>
-        <div id="filedrag" class="drop">
-            <div>or drop files here</div>
-            <img id="container"/>
-            <div id="thumbnails"></div>
+
+<div class="site-wrap">
+
+    <div class="site-mobile-menu">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
         </div>
+        <div class="site-mobile-menu-body"></div>
     </div>
-<!--    <button id="btnSubmit">등록하기</button>-->
-</form>
 
-<div>
-    <section>
+    <header class="header-bar d-flex d-lg-block align-items-center" data-aos="fade-left">
+        <div class="site-logo">
+            <a href="index.html">UPLOAD CENTER</a>
+        </div>
+
+        <div class="d-inline-block d-xl-none ml-md-0 ml-auto py-3" style="position: relative; top: 3px;">
+            <a href="#" class="site-menu-toggle js-menu-toggle text-white">
+                <span class="icon-menu h3"></span>
+            </a>
+        </div>
+
+        <div class="main-menu">
+            <ul class="js-clone-nav">
+                <li class="active"><a href="index.html">Home</a></li>
+                <li><a href="https://sazaxa.com/index.php">SAZAXA</a></li>
+                <li><a href="https://sazaxa.com/admin/login.php">ADMIN</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="drag-box">
+        <form>
+            <div class="drag-img">
+                <!--        <label for="fileselect">Files to upload:</label>-->
+                <input type="file" id="fileselect" name="files" multiple="multiple" hidden/>
+                <div id="filedrag" class="drop">
+                    <div id="drop-text">DROP FILES HERE</div>
+<!--                    <img id="container"/>-->
+<!--                    <div id="thumbnails"></div>-->
+                </div>
+            </div>
+            <!--    <button id="btnSubmit">등록하기</button>-->
+        </form>
+    </div>
+
+    <div class="img-box">
         <div id="data-container"></div>
         <div id="pagination"></div>
-    </section>
+    </div>
+
+
+
+
 </div>
 
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.724.0.min.js"></script>
 <script th:src="@{/js/app.js}"></script>
-<!--<script>-->
-<!--    function getHtml(template) {-->
-<!--        return template.join('\n');-->
-<!--    }-->
-<!--</script>-->
 
 <!-- AWS S3 이미지 불러오기 및 Paging-->
 <script th:src="@{/js/filedrag.js}"></script>
@@ -53,6 +99,7 @@
             let container = $('#pagination');
             container.pagination({
                 dataSource: data,
+                pageSize: 35,
                 callback: function (data, pagination) {
                     var dataHtml = '<ul id="upload-img-ul">';
                     $.each(data, function (index, item) {
@@ -78,9 +125,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
       integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
       crossorigin="anonymous"/>
-
-
-
 
 
 <!-- drag & drop -->
@@ -185,9 +229,6 @@
     }
 
 
-
-
-
     function copyFunction(copyUrlTemp) {
         var copyUrl = copyUrlTemp.getAttribute('src');
         var tempElem = document.createElement('textarea');
@@ -217,73 +258,20 @@
             "hideMethod": "fadeOut"
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-    // function copyFunction(copyUrl) {
-    //     var copyUrl = $(copyUrl).text();
-    //     var tempElem = document.createElement('textarea');
-    //     tempElem.value = copyUrl;
-    //     document.body.appendChild(tempElem);
-    //
-    //     tempElem.select();
-    //     document.execCommand("copy");
-    //     document.body.removeChild(tempElem);
-    //
-    //
-    //     toastr["success"]("복사완료")
-    //     toastr.options = {
-    //         "closeButton": false,
-    //         "debug": false,
-    //         "newestOnTop": false,
-    //         "progressBar": false,
-    //         "positionClass": "toast-top-center",
-    //         "preventDuplicates": false,
-    //         "onclick": null,
-    //         "showDuration": "500",
-    //         "hideDuration": "700",
-    //         "timeOut": "700",
-    //         "extendedTimeOut": "1000",
-    //         "showEasing": "swing",
-    //         "hideEasing": "linear",
-    //         "showMethod": "fadeIn",
-    //         "hideMethod": "fadeOut"
-    //     }
-    // }
-
-
-    // images upload
-    // $("#btnSubmit").on("click", function () {
-    //     var formData = new FormData();
-    //     $.each(uploadFiles, function (i, file) {
-    //         //if (file.upload != 'disable')
-    //             //삭제하지 않은 이미지만 업로드 항목으로 추가
-    //             formData.append('upload-file', file, file.name);
-    //     });
-    //
-    //     $.ajax({
-    //         url: '/gallery',
-    //         data: formData,
-    //         type: 'post',
-    //         contentType: false,
-    //         processData: false,
-    //         success: function (ret) {
-    //             alert("완료");
-    //         }
-    //     });
-    // });
-
 </script>
 
+
+<script src="js/jquery-ui.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.stellar.min.js"></script>
+<script src="js/jquery.countdown.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/bootstrap-datepicker.min.js"></script>
+<script src="js/aos.js"></script>
+<script src="js/jquery.fancybox.min.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 </html>
