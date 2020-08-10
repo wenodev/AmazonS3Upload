@@ -20,12 +20,13 @@ public class GalleryController {
 
     @GetMapping("/")
     public String hello(){
-        System.out.println("this is test code for controller");
+        System.out.println("this is test code for controller hello");
         return "hello";
     }
 
     @GetMapping("/gallery")
     public String galleryPage(){
+        System.out.println("this is test code for controller galleryPage");
         return "gallery";
     }
 
