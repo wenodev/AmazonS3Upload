@@ -20,6 +20,7 @@ public class GalleryController {
 
     @GetMapping("/")
     public String hello(){
+        System.out.println("this is test code for controller");
         return "hello";
     }
 
