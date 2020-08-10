@@ -4,7 +4,7 @@
 http://ec2-3-21-221-108.us-east-2.compute.amazonaws.com:8080/gallery
 
 ### architecture
-    <img src="https://s3.us-east-2.amazonaws.com/sazaxa-img-hosting/2020081008333797">
+<img src="https://s3.us-east-2.amazonaws.com/sazaxa-img-hosting/2020081008333797" width="50%">
 
 ### 주요 성과
     1. EC2 - S3 연동
