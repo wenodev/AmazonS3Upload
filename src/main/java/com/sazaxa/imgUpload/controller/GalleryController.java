@@ -26,7 +26,7 @@ public class GalleryController {
 
     @GetMapping("/gallery")
     public String galleryPage(){
-        return "/gallery";
+        return "gallery";
     }
 
     @PostMapping("/gallery")
