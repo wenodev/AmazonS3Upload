@@ -20,7 +20,7 @@ public class GalleryController {
 
     @GetMapping("/")
     public String hello(){
-        return "/hello";
+        return "hello";
     }
 
     @GetMapping("/gallery")
