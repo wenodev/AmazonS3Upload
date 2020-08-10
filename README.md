@@ -4,7 +4,7 @@
 http://ec2-3-21-221-108.us-east-2.compute.amazonaws.com:8080/gallery
 
 ### architecture
-![archi](./readImg/archi.png)
+![archi.PNG](./readImg/archi.PNG)
 
 ### 주요 성과
     1. EC2 - S3 연동
